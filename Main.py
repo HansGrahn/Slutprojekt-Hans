@@ -1,8 +1,3 @@
-"""
-Telefonbok v2 - Konsolversion med CSV-lagring
-Kontakter sparas automatiskt till 'kontakter.csv'
-"""
-
 import csv
 import os
 
@@ -44,11 +39,21 @@ def lägg_till_kontakt():
         return
     telefonbok[namn] = nummer
     spara_till_csv()
-    print(f"✓ {namn} har lagts till och sparats.")
+    print(f"{namn} har lagts till och sparats.")
+    os.system("pause")
 
 
 def sök_kontakt():
-    pass
+    sökterm = input("Sök namn: ").strip().lower()
+    resultat = {namn: nr for namn, nr in telefonbok.items() if sökterm in namn.lower()}
+    if resultat:
+        print(f"\n{'Namn':<20} {'Nummer'}")
+        print("-" * 35)
+        for namn, nummer in resultat.items():
+            print(f"{namn:<20} {nummer}")
+    else:
+        print("Ingen kontakt hittades.")
+    os.system("pause")
 
 
 def visa_alla():
@@ -60,17 +65,32 @@ def visa_alla():
     for namn, nummer in sorted(telefonbok.items()):
         print(f"{namn:<20} {nummer}")
     print(f"\nTotalt: {len(telefonbok)} kontakt(er)  |  Fil: {FIL}")
-
+    os.system("pause")
 
 def ta_bort_kontakt():
-    pass
+    namn = input("Namn på kontakt att ta bort: ").strip()
 
+    # spelar ej roll om stor eller liten bokstav
+    hittad = None
+    for kontakt in telefonbok:
+        if kontakt.lower() == namn.lower():
+            hittad = kontakt
+            break
+
+    if hittad:
+        del telefonbok[hittad]
+        spara_till_csv()
+        print(f"{hittad} har tagits bort.")
+    else:
+        print(f"'{namn}' hittades inte.")
+
+    os.system("pause")
 
 
 
 
 def visa_meny():
-    print("\n=== TELEFONBOK v2 ===")
+    print("\n=== TELEFONBOK ===")
     print("1. Lägg till kontakt")
     print("2. Visa alla kontakter")
     print("3. Sök")
@@ -81,7 +101,6 @@ def visa_meny():
 
 
 def main():
-    print("Välkommen till Telefonboken!")
     ladda_från_csv()
     while True:
         visa_meny()
@@ -91,11 +110,11 @@ def main():
         elif val == "2":
             visa_alla()
         elif val == "3":
-            pass
+            sök_kontakt()
         elif val == "4":
             pass
         elif val == "5":
-            pass
+            ta_bort_kontakt()
         elif val == "6":
             print("Hejdå!")
             break
